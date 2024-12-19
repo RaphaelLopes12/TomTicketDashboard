@@ -7,7 +7,7 @@ import { TicketResponse } from '../models/ticket.model';
   providedIn: 'root',
 })
 export class TicketService {
-  private apiUrl = 'https://api.raphaelferreiralopes.com.br/tickets';
+  private apiUrl = 'https://api.raphaelferreiralopes.com.br/api/tickets';
 
   constructor(private http: HttpClient) {}
 
