@@ -1,27 +1,32 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TicketService } from '../../core/services/ticket.service';
 import { Ticket } from '../../core/models/ticket.model';
 
+
 @Component({
   selector: 'app-tickets',
   standalone: true,
   imports: [
+    CommonModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSortModule,
     MatToolbarModule,
-    MatIconModule,
-    CommonModule,
+    MatIconModule,  
   ],
   templateUrl: './tickets.component.html',
   styleUrls: ['./tickets.component.scss'],
 })
-export class TicketsComponent implements OnInit {
+export class TicketsComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'subject',
     'situation',
@@ -34,8 +39,11 @@ export class TicketsComponent implements OnInit {
   totalTickets = 0;
   pageSize = 10;
   currentPage = 1;
+  sortField = 'creationDate';
+  sortOrder = 'desc';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private ticketService: TicketService) {}
 
@@ -43,10 +51,14 @@ export class TicketsComponent implements OnInit {
     this.loadTickets();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+  }
+
   loadTickets(): void {
     const page = this.currentPage;
 
-    this.ticketService.getTickets(page, this.pageSize).subscribe(
+    this.ticketService.getTickets(page, this.pageSize, this.sortField, this.sortOrder).subscribe(
       (response) => {
         this.dataSource.data = response.data;
         this.totalTickets = response.total;

@@ -7,14 +7,23 @@ import { TicketResponse } from '../models/ticket.model';
   providedIn: 'root',
 })
 export class TicketService {
-  private apiUrl = 'https://api.raphaelferreiralopes.com.br/tickets';
+  private apiUrl = 'https://api.raphaelferreiralopes.com.br/api/tickets';
 
   constructor(private http: HttpClient) {}
 
-  getTickets(page: number, size: number): Observable<TicketResponse> {
+  getTickets(page: number, size: number, sortField: string, sortOrder: string): Observable<TicketResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('sortField', sortField)
+      .set('sortOrder', sortOrder);
+    return this.http.get<TicketResponse>(this.apiUrl, { params });
+  }
+
+  getTicketsTest(page: number, size: number): Observable<TicketResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
     return this.http.get<TicketResponse>(this.apiUrl, { params });
   }
 }
